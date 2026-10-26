@@ -10,7 +10,7 @@ spec:
 
   source:
     repoURL: https://github.com/JonesKwameOsei/${{ values.app_name }}.git
-    targetRevision: master
+    targetRevision: main
     path: charts/${{ values.app_name }}
     helm:
       releaseName: ${{ values.app_name }}
