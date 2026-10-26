@@ -47,6 +47,7 @@ spec:
         repoUrl: github.com?owner=JonesKwameOsei&repo=${{parameters.component_id}}
         protectDefaultBranch: false
         repoVisibility: public
+        defaultBranch: main
 
     - id: fetch-argocd-app
       name: Render Argo CD Application
