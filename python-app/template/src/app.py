@@ -14,7 +14,7 @@ class ReturnInfo(Resource):
             "hostname": socket.gethostname(),
             "message": "You are welcome to the ${{ values.app_name }}! 💝💖",
             "deployed_on": "kubernetes",
-            "env": "${{ values.app_emv }}",
+            "env": "${{ values.app_env }}",
             "app_name": "${{ values.app_name }}"
         }
         return data
