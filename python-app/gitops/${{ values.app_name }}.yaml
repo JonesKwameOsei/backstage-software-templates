@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.app_name }}
+  namespace: argocd             # Applications always live in Argo CD's namespace
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/JonesKwameOsei/${{ values.app_name }}.git
+    targetRevision: master
+    path: charts/${{ values.app_name }}
+    helm:
+      releaseName: ${{ values.app_name }}
+      valueFiles:
+        - values.yaml
+        - values-${{ values.app_env }}.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.app_name }}-${{ values.app_env }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        gateway-access: "true"

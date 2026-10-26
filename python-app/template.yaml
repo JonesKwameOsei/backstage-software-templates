@@ -18,7 +18,7 @@ spec:
           title: Component name
           type: string
           description: Provide a component (microservice) name
-          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
+          pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'
         environment:
           title: Environment
           type: string
@@ -26,7 +26,7 @@ spec:
           enum:
             - dev
             - staging
-            - UAT
+            - uat
             - prod
 
   steps:
@@ -47,6 +47,28 @@ spec:
         repoUrl: github.com?owner=JonesKwameOsei&repo=${{parameters.component_id}}
         protectDefaultBranch: false
         repoVisibility: public
+
+    - id: fetch-argocd-app
+      name: Render Argo CD Application
+      action: fetch:template
+      input:
+        url: ./gitops
+        targetPath: ./gitops-pr
+        values:
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
+
+    - id: register-argocd-app
+      name: Open PR in GitOps repo
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=JonesKwameOsei&repo=gitops
+        branchName: add-${{ parameters.component_id }}
+        title: "Add ${{ parameters.component_id }} (${{ parameters.environment }})"
+        description: Created by Backstage
+        sourcePath: ./gitops-pr
+        targetPath: apps
+
 
     - id: register
       name: Register

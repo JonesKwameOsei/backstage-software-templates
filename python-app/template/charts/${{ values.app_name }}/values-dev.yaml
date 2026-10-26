@@ -1,0 +1,17 @@
+image:
+  tag: ""
+
+replicaCount: 1
+
+env:
+  APP_ENV: dev
+  LOG_LEVEL: debug
+
+httpRoute:
+  hostnames:
+    - ${{ values.app_name }}-dev.test.com
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 50M

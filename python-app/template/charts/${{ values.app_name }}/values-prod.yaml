@@ -1,0 +1,22 @@
+image:
+  tag: ""
+
+replicaCount: 3
+
+env:
+  APP_ENV: prod
+  LOG_LEVEL: warn
+
+httpRoute:
+  hostnames:
+    - ${{ values.app_name }}.test.com
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 128M
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10

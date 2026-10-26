@@ -1,0 +1,22 @@
+image:
+  tag: ""
+
+replicaCount: 2
+
+env:
+  APP_ENV: uat
+  LOG_LEVEL: info
+
+httpRoute:
+  hostnames:
+    - ${{ values.app_name }}-uat.test.com
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 128M
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
