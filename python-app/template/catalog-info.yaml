@@ -5,7 +5,7 @@ metadata:
   description: A python application displaying time and hostname info - named ${{ values.app_name }}.
   # Example for optional annotations
   annotations:
-    github.com/project-slug: JonesKwameOsei/${{ values.app_name }}
+    github.com/project-slug: joneskwameosei-org/${{ values.app_name }}
     backstage.io/techdocs-ref: dir:.
 spec:
   type: service
