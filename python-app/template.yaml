@@ -63,10 +63,10 @@ spec:
       name: Open PR in GitOps repo
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?owner=JonesKwameOsei&repo=gitops
+        repoUrl: github.com?owner=joneskwameosei-org&repo=gitops
         branchName: add-${{ parameters.component_id }}
         title: "Add ${{ parameters.component_id }} (${{ parameters.environment }})"
-        description: Created by Backstage
+        description: This is ${{ parameters.component_id }}
         sourcePath: ./gitops-pr
         targetPath: apps
 
