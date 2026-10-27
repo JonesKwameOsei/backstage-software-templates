@@ -44,7 +44,7 @@ spec:
       action: publish:github
       input:
         description: This is ${{ parameters.component_id }}
-        repoUrl: github.com?owner=JonesKwameOsei&repo=${{parameters.component_id}}
+        repoUrl: github.com?owner=joneskwameosei-org&repo=${{parameters.component_id}}
         protectDefaultBranch: false
         repoVisibility: public
         defaultBranch: main
@@ -66,7 +66,7 @@ spec:
         repoUrl: github.com?owner=joneskwameosei-org&repo=gitops
         branchName: add-${{ parameters.component_id }}
         title: "Add ${{ parameters.component_id }} (${{ parameters.environment }})"
-        description: This is ${{ parameters.component_id }}
+        description: Created by Backstage
         sourcePath: ./gitops-pr
         targetPath: apps
 
