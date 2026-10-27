@@ -23,7 +23,7 @@ env:
 runner:
   enabled: true
   replicas: 1
-  repository: JonesKwameOsei/${{ values.app_name }}
+  repository: joneskwameosei-org/${{ values.app_name }}
 
 httpRoute:
   enabled: true
