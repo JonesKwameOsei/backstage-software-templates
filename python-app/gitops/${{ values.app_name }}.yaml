@@ -9,7 +9,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/JonesKwameOsei/${{ values.app_name }}.git
+    repoURL: https://github.com/joneskwameosei-org/${{ values.app_name }}.git
     targetRevision: main
     path: charts/${{ values.app_name }}
     helm:
