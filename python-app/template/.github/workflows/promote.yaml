@@ -1,0 +1,51 @@
+name: promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: Environment to copy the image tag from
+        type: choice
+        options: [dev, staging, uat]
+        default: dev
+      to:
+        description: Environment to promote to
+        type: choice
+        options: [staging, uat, prod]
+        default: staging
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      FROM: ${{ '${{ inputs.from }}' }}
+      TO: ${{ '${{ inputs.to }}' }}
+      CHART: charts/${{ values.app_name }}
+      GH_TOKEN: ${{ '${{ github.token }}' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy image tag
+        run: |
+          TAG=$(yq '.image.tag' "$CHART/values-$FROM.yaml")
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            echo "No image tag set in values-$FROM.yaml"; exit 1
+          fi
+          yq -i ".image.tag = \"$TAG\" | .image.tag style=\"double\"" "$CHART/values-$TO.yaml"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+
+      - name: Open promotion PR
+        run: |
+          BRANCH="promote-$TO-$TAG"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git commit -am "promote: ${{ values.app_name }} $TAG from $FROM to $TO"
+          git push -u origin "$BRANCH"
+          gh pr create --base main --title "Promote $TAG to $TO" \
+            --body "Promotes image \`$TAG\` (tested in $FROM) to $TO."
