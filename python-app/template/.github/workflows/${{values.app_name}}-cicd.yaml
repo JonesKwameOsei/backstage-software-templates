@@ -96,4 +96,9 @@ jobs:
             --grpc-web \
             --username ${{ '${{ vars.ARGOCD_USERNAME }}' }} \
             --password ${{ '${{ secrets.ARGOCD_PASSWORD }}' }}
+          for i in $(seq 1 30); do
+            argocd app get ${{ values.app_name }} > /dev/null 2>&1 && break
+            echo "Waiting for Argo CD to create ${{ values.app_name }} ($i/30)..."
+            sleep 20
+          done 
           argocd app sync ${{ values.app_name }}
