@@ -12,7 +12,7 @@ class ReturnInfo(Resource):
         data = {
             "time": datetime.datetime.now().strftime("%I:%M:%S%p on %B %d, %Y"),
             "hostname": socket.gethostname(),
-            "message": "You are welcome to the ${{ values.app_name }}! 💝💖",
+            "message": "You are welcome to the ${{ values.app_name }}!",
             "deployed_on": "kubernetes",
             "env": "${{ values.app_env }}",
             "app_name": "${{ values.app_name }}"
