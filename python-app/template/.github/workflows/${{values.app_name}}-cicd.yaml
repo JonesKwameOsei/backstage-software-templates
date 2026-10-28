@@ -102,3 +102,4 @@ jobs:
             sleep 20
           done 
           argocd app sync ${{ values.app_name }}
+          argocd app wait ${{ values.app_name }} --timeout 180
