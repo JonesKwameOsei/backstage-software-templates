@@ -1,0 +1,58 @@
+name: validate-templates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python-app:
+    runs-on: ubuntu-latest
+    env:
+      OUT: /tmp/rendered
+      APP: ci-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate template entity
+        run: npx --yes @roadiehq/backstage-entity-validator@0.7.0 python-app/template.yaml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Render skeleton like fetch:template
+        run: |
+          pip install jinja2==3.1.6
+          python .github/scripts/render_template.py python-app/template "$OUT" \
+            app_name=$APP app_env=dev owner=group:default/development
+          if grep -rnE --exclude-dir=.github '\$\{\{' "$OUT"; then
+            echo "::error::Unrendered placeholders left in skeleton"; exit 1
+          fi
+
+      - name: Validate rendered catalog-info.yaml
+        run: npx --yes @roadiehq/backstage-entity-validator@0.7.0 "$OUT/catalog-info.yaml"
+
+      - uses: azure/setup-helm@v4
+
+      - name: Lint and render Helm chart
+        run: |
+          helm lint "$OUT/charts/$APP" -f "$OUT/charts/$APP/values-dev.yaml"
+          helm template "$APP" "$OUT/charts/$APP" -f "$OUT/charts/$APP/values-dev.yaml" > /dev/null
+
+      - name: Build and smoke-test image (read-only root, as in Kubernetes)
+        run: |
+          docker build -t "$APP" "$OUT"
+          docker run -d --name "$APP" -p 5000:5000 --read-only --tmpfs /tmp "$APP"
+          sleep 3
+          for p in / /api/v1/info /livez /readyz; do
+            curl -fsS "http://localhost:5000$p" > /dev/null
+            echo "$p ok"
+          done
+          [ "$(docker exec "$APP" id -u)" != "0" ] || { echo "::error::Container runs as root"; exit 1; }
+          if docker logs "$APP" 2>&1 | grep -iE 'error|traceback'; then
+            echo "::error::Errors in container logs"; exit 1
+          fi
