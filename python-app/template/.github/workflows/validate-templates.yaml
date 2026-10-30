@@ -1,4 +1,4 @@
-name: validate-templates
+name: validate-templates # template name
 
 on:
   pull_request:
