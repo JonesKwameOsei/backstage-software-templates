@@ -48,3 +48,4 @@ api.add_resource(ReturnReady, "/readyz")
 if __name__ == "__main__":
     # Local development only; the container runs gunicorn
     app.run(host="0.0.0.0", port=5000)
+BROKEN = "${{ values.typo }}"
