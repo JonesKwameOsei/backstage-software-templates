@@ -14,7 +14,7 @@ Welcome to the TechDocs home page for **${{ values.app_name }}**, a lightweight 
 | Lifecycle | `experimental`                                                   |
 | Language  | Python 3.12 (Flask, Flask-RESTful)                               |
 | Port      | `5000`                                                           |
-| Source    | [GitHub](https://github.com/JonesKwameOsei/python-api)           |
+| Source    | [GitHub](https://github.com/joneskwameosei-org/${{ values.app_name }}) |
 
 ## API Reference
 
@@ -31,14 +31,26 @@ Returns the current time, the hostname of the pod serving the request, and a wel
 }
 ```
 
-### `GET /api/v1/healthz`
+### `GET /`
 
-Health check endpoint used by Kubernetes liveness and readiness probes.
+Lists the service name, environment and available endpoints.
+
+### `GET /livez`
+
+Liveness probe. Returns `200` while the process can respond. It never checks dependencies,
+so a database outage can't make Kubernetes restart every pod.
 
 ```json
-{
-  "status": "up"
-}
+{ "status": "alive" }
+```
+
+### `GET /readyz`
+
+Readiness probe. Returns `200` when the pod can serve traffic. Add dependency checks here
+(database, downstream APIs); a failing pod is removed from the Service until it recovers.
+
+```json
+{ "status": "ready" }
 ```
 
 ## Getting Started

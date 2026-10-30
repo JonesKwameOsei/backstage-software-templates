@@ -17,11 +17,12 @@ Check the route is attached to Gateway "{{ .Values.httpRoute.gateway.name }}" (e
   kubectl -n {{ .Release.Namespace }} get httproute {{ include "python-app.name" . }} -o jsonpath='{.status.parents[0].conditions}'
 
 Call the API:
-  curl {{ $base }}/api/v1/details
-  curl {{ $base }}{{ .Values.healthCheckPath }}
+  curl {{ $base }}/
+  curl {{ $base }}/api/v1/info
+  curl {{ $base }}{{ .Values.probes.readinessPath }}
 {{- else }}
 
 The HTTPRoute is disabled. Reach the API with a port-forward:
   kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "python-app.name" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
-  curl http://localhost:{{ .Values.service.port }}/api/v1/details
+    curl http://localhost:{{ .Values.service.port }}/api/v1/info
 {{- end }}
