@@ -7,13 +7,13 @@ Welcome to the TechDocs home page for **${{ values.app_name }}**, a lightweight 
 
 ## Overview
 
-| Property  | Value                                                            |
-| --------- | ---------------------------------------------------------------- |
-| Type      | Service                                                          |
-| Owner     | `development`                                                    |
-| Lifecycle | `experimental`                                                   |
-| Language  | Python 3.12 (Flask, Flask-RESTful)                               |
-| Port      | `5000`                                                           |
+| Property  | Value                                                                  |
+| --------- | ----------------------------------------------------------------       |
+| Type      | Service                                                                |
+| Owner     | `${{ values.owner }}`                                                  |
+| Lifecycle | `experimental`                                                         |
+| Language  | Python 3.12 (Flask, Flask-RESTful)                                     |
+| Port      | `5000`                                                                 |
 | Source    | [GitHub](https://github.com/joneskwameosei-org/${{ values.app_name }}) |
 
 ## API Reference

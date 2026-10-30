@@ -13,6 +13,7 @@ spec:
       required:
         - component_id
         - environment
+        - owner
       properties:
         component_id:
           title: Component name
@@ -28,6 +29,14 @@ spec:
             - staging
             - uat
             - prod
+        owner:
+          title: Owner
+          type: string
+          description: Team that owns this service
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
 
   steps:
     - id: fetch-base
@@ -38,6 +47,7 @@ spec:
         values:
           app_name: ${{parameters.component_id}}
           app_env: ${{parameters.environment}}
+          owner: ${{parameters.owner}}
 
     - id: publish
       name: Publish
