@@ -6,7 +6,7 @@ variable fail the build instead of silently rendering as an empty string.
 """
 import pathlib
 import shutil
-import sys
+import sys # important
 
 import jinja2
 
