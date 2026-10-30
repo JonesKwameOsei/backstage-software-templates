@@ -21,6 +21,10 @@ spec:
       labels:
         {{- include "python-app.selectorLabels" . | nindent 8 }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -35,13 +39,27 @@ spec:
           {{- end }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.healthCheckPath }}
+              path: {{ .Values.probes.readinessPath }}
               port: http
+            periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: {{ .Values.healthCheckPath }}
+              path: {{ .Values.probes.livenessPath }}
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

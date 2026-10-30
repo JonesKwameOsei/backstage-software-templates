@@ -12,8 +12,6 @@ service:
   type: ClusterIP
   port: 5000
 
-healthCheckPath: /api/v1/healthz
-
 # Environment variables for the container, stored in a ConfigMap and loaded with envFrom.
 # Leave empty ({}) to skip the ConfigMap. Values are always rendered as strings.
 env:
@@ -36,14 +34,10 @@ resources:
   requests:
     cpu: 50m
     memory: 50M
-livenessProbe:
-  httpGet:
-    path: /api/v1/healthz
-    port: http
-readinessProbe:
-  httpGet:
-    path: /api/v1/healthz
-    port: http
+probes:
+  livenessPath: /livez
+  readinessPath: /readyz
+  
 # When enabled, the HPA owns the replica count and replicaCount is ignored.
 # Requires resources.requests.cpu (and metrics-server, which k3s ships).
 autoscaling:
